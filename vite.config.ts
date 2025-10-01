@@ -10,19 +10,14 @@ export default defineConfig(({ mode }) => {
       port: 3000,
       host: '0.0.0.0',
     },
-codex/setup-project-with-eslint-and-vitest
     plugins: [react(), tsconfigPaths()],
-=======
-    plugins: [react()],
-main
     define: {
       'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
       'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
     },
     resolve: {
       alias: {
-codex/setup-project-with-eslint-and-vitest
-        '@': path.resolve(__dirname, '.'),
+        '@': path.resolve(__dirname, './src'),
       },
     },
     test: {
@@ -39,10 +34,5 @@ codex/setup-project-with-eslint-and-vitest
         },
       },
     },
-=======
-        '@': path.resolve(__dirname, './src'),
-      },
-    },
-main
   };
 });
