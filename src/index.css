@@ -3,6 +3,14 @@
 @tailwind utilities;
 
 @layer base {
+  body {
+    @apply min-h-screen bg-gradient-to-br from-[#eef2ff] via-[#f5f3ff] to-[#fdf2f8] font-sans antialiased text-text-primary;
+  }
+
+  #root {
+    @apply min-h-screen flex;
+  }
+
   @media print {
     body * {
       visibility: hidden;
