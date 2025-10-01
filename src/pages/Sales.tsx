@@ -5,6 +5,7 @@ import { Sale } from '../types';
 import { EditIcon, DeleteIcon, DollarSignIcon, ArrowUpIcon, ArrowDownIcon } from '../components/Icons';
 import { useNotification } from '../context/NotificationContext';
 import { formatCurrency } from '../utils/helpers';
+import DataTable from '../components/DataTable';
 
 type SortableSaleKeys = keyof Sale | 'productName' | 'customerName';
 
@@ -143,9 +144,14 @@ const Sales: React.FC = () => {
   };
   
   const SortableHeader: React.FC<{ sortKey: SortableSaleKeys; children: React.ReactNode }> = ({ sortKey, children }) => (
-    <th className="p-4 font-semibold cursor-pointer text-left" onClick={() => requestSort(sortKey)}>
-      <div className="flex items-center">{children} {getSortIcon(sortKey)}</div>
-    </th>
+    <button
+      type="button"
+      onClick={() => requestSort(sortKey)}
+      className="flex items-center gap-1 font-semibold text-text-primary hover:text-accent focus:outline-none"
+    >
+      {children}
+      {getSortIcon(sortKey)}
+    </button>
   );
 
   return (
@@ -158,49 +164,71 @@ const Sales: React.FC = () => {
       </div>
 
       <div className="bg-primary rounded-xl shadow-md overflow-hidden border border-border">
-        {sales.length === 0 ? (
-          <div className="text-center py-20">
-            <DollarSignIcon className="mx-auto h-16 w-16 text-gray-300" />
-            <h3 className="mt-4 text-lg font-semibold text-text-primary">No hay ventas registradas</h3>
-            <p className="mt-1 text-sm text-text-secondary">Usa la "Venta Rápida" o registra una venta manual para empezar.</p>
-          </div>
-        ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-secondary">
-              <tr>
-                <SortableHeader sortKey="date">Fecha</SortableHeader>
-                <SortableHeader sortKey="productName">Producto</SortableHeader>
-                <SortableHeader sortKey="customerName">Cliente</SortableHeader>
-                <SortableHeader sortKey="quantity">Cantidad</SortableHeader>
-                <SortableHeader sortKey="unitPrice">Precio Unitario</SortableHeader>
-                <SortableHeader sortKey="total">Total</SortableHeader>
-                <th className="p-4 font-semibold text-left">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sortedSales.map(sale => {
-                return (
-                  <tr key={sale.id} className="border-b border-border hover:bg-secondary/50 transition-colors">
-                    <td className="p-4 text-left">{sale.date}</td>
-                    <td className="p-4 text-left">{sale.productName}</td>
-                    <td className="p-4 text-left">{sale.customerName}</td>
-                    <td className="p-4 text-left">{sale.quantity}</td>
-                    <td className="p-4 text-left">{formatCurrency(sale.unitPrice)}</td>
-                    <td className="p-4 font-medium text-left">{formatCurrency(sale.total)}</td>
-                     <td className="p-4 text-left">
-                      <div className="flex items-center space-x-2">
-                        <button onClick={() => handleOpenModalForEdit(sale)} className="text-accent hover:text-accent-hover p-1"><EditIcon className="w-5 h-5"/></button>
-                        <button onClick={() => handleDelete(sale.id)} className="text-danger hover:opacity-75 p-1"><DeleteIcon className="w-5 h-5"/></button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-        )}
+        <DataTable
+          columns={[
+            {
+              key: 'date',
+              header: <SortableHeader sortKey="date">Fecha</SortableHeader>,
+              accessor: 'date',
+            },
+            {
+              key: 'productName',
+              header: <SortableHeader sortKey="productName">Producto</SortableHeader>,
+              accessor: 'productName',
+              className: 'min-w-[180px]',
+            },
+            {
+              key: 'customerName',
+              header: <SortableHeader sortKey="customerName">Cliente</SortableHeader>,
+              accessor: 'customerName',
+              className: 'min-w-[160px]',
+            },
+            {
+              key: 'quantity',
+              header: <SortableHeader sortKey="quantity">Cantidad</SortableHeader>,
+              accessor: 'quantity',
+              variant: 'badge',
+            },
+            {
+              key: 'unitPrice',
+              header: <SortableHeader sortKey="unitPrice">Precio Unitario</SortableHeader>,
+              render: sale => formatCurrency(sale.unitPrice),
+            },
+            {
+              key: 'total',
+              header: <SortableHeader sortKey="total">Total</SortableHeader>,
+              render: sale => formatCurrency(sale.total),
+              className: 'font-semibold',
+            },
+          ]}
+          rows={sortedSales}
+          rowKey={sale => sale.id}
+          emptyState={
+            <>
+              <DollarSignIcon className="mx-auto h-16 w-16 text-gray-300" />
+              <h3 className="text-lg font-semibold text-text-primary">No hay ventas registradas</h3>
+              <p className="text-sm text-text-secondary">
+                Usa la "Venta Rápida" o registra una venta manual para empezar.
+              </p>
+            </>
+          }
+          actions={{
+            render: sale => (
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => handleOpenModalForEdit(sale)}
+                  className="text-accent hover:text-accent-hover p-1"
+                >
+                  <EditIcon className="w-5 h-5" />
+                </button>
+                <button onClick={() => handleDelete(sale.id)} className="text-danger hover:opacity-75 p-1">
+                  <DeleteIcon className="w-5 h-5" />
+                </button>
+              </div>
+            ),
+            className: 'min-w-[120px]',
+          }}
+        />
       </div>
       
       <Modal isOpen={isModalOpen} onClose={handleCloseModal} title={editingSale ? "Editar Venta" : "Registrar Nueva Venta Manual"}>

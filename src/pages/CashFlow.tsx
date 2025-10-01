@@ -3,6 +3,7 @@ import { useData } from '../context/DataContext';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import DashboardCard from '../components/DashboardCard';
 import { DollarSignIcon, TrendingUpIcon, TrendingDownIcon } from '../components/Icons';
+import DataTable from '../components/DataTable';
 import { AdjustmentType } from '../types';
 import { formatCurrency } from '../utils/helpers';
 
@@ -145,48 +146,42 @@ const CashFlow: React.FC = () => {
       
       <div className="bg-primary rounded-xl shadow-md overflow-hidden border border-border">
         <h2 className="text-xl font-bold p-4 border-b">Detalle de Movimientos</h2>
-        <div className="overflow-x-auto max-h-96">
-          <table className="w-full">
-            <thead className="bg-secondary sticky top-0">
-              <tr>
-                <th className="p-4 font-semibold text-left">Fecha</th>
-                <th className="p-4 font-semibold text-left">Descripción</th>
-                <th className="p-4 font-semibold text-left">Tipo</th>
-                <th className="p-4 font-semibold text-right">Monto</th>
-                <th className="p-4 font-semibold text-right">Saldo</th>
-              </tr>
-            </thead>
-            <tbody>
-              {processedData.transactionsWithBalance.length > 0 ? (
-                processedData.transactionsWithBalance.map((t, index) => (
-                  <tr key={index} className="border-b border-border hover:bg-secondary/50">
-                    <td className="p-4">{t.date}</td>
-                    <td className="p-4">{t.description}</td>
-                    <td className="p-4">
-                      <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                        t.type === 'Ingreso' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                      }`}>
-                        {t.type}
-                      </span>
-                    </td>
-                    <td className={`p-4 text-right font-medium ${
-                      t.type === 'Ingreso' ? 'text-success' : 'text-danger'
-                    }`}>
-                      {t.type === 'Ingreso' ? '+' : '-'}{formatCurrency(t.amount)}
-                    </td>
-                    <td className="p-4 text-right font-semibold">{formatCurrency(t.balance)}</td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={5} className="text-center py-10 text-text-secondary">
-                    No hay transacciones en el período seleccionado.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+        <DataTable
+          columns={[
+            { key: 'date', header: 'Fecha', accessor: 'date' },
+            { key: 'description', header: 'Descripción', accessor: 'description', className: 'min-w-[220px]' },
+            {
+              key: 'type',
+              header: 'Tipo',
+              render: transaction => (
+                <span className={transaction.type === 'Ingreso' ? 'badge-success' : 'badge-danger'}>{transaction.type}</span>
+              ),
+            },
+            {
+              key: 'amount',
+              header: 'Monto',
+              align: 'right',
+              render: transaction => (
+                <span className={transaction.type === 'Ingreso' ? 'text-success font-medium' : 'text-danger font-medium'}>
+                  {transaction.type === 'Ingreso' ? '+' : '-'}
+                  {formatCurrency(transaction.amount)}
+                </span>
+              ),
+            },
+            {
+              key: 'balance',
+              header: 'Saldo',
+              align: 'right',
+              render: transaction => <span className="font-semibold">{formatCurrency(transaction.balance)}</span>,
+            },
+          ]}
+          rows={processedData.transactionsWithBalance}
+          rowKey={(transaction, index) => `${transaction.date}-${index}`}
+          emptyState={
+            <p className="text-text-secondary">No hay transacciones en el período seleccionado.</p>
+          }
+          scrollClassName="max-h-96 overflow-y-auto"
+        />
       </div>
     </div>
   );

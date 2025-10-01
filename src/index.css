@@ -35,3 +35,97 @@
     }
   }
 }
+
+@layer components {
+  .data-table-wrapper {
+    position: relative;
+  }
+
+  .data-table-scroll {
+    overflow-x: auto;
+  }
+
+  .data-table {
+    width: 100%;
+    border-spacing: 0;
+  }
+
+  .data-table-head-cell {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    backdrop-filter: blur(12px);
+    background-color: rgba(255, 255, 255, 0.6);
+    text-align: left;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #6b7280;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+    white-space: nowrap;
+  }
+
+  .data-table-row {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .data-table-row:nth-child(odd) {
+    background-color: rgba(255, 255, 255, 0.7);
+  }
+
+  .data-table-row:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.4);
+  }
+
+  .data-table-row:hover {
+    background-color: rgba(255, 255, 255, 0.8);
+  }
+
+  .data-table-cell {
+    padding: 0.75rem 1rem;
+    vertical-align: middle;
+    font-size: 0.875rem;
+    color: #1f2937;
+  }
+
+  .data-table-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 4rem 1rem;
+    text-align: center;
+  }
+}
+
+@layer utilities {
+  .badge-soft,
+  .badge-success,
+  .badge-danger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    border-radius: 9999px;
+    padding: 0.125rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  .badge-soft {
+    background-color: rgba(99, 102, 241, 0.12);
+    color: #4f46e5;
+  }
+
+  .badge-success {
+    background-color: rgba(16, 185, 129, 0.18);
+    color: #047857;
+  }
+
+  .badge-danger {
+    background-color: rgba(239, 68, 68, 0.18);
+    color: #b91c1c;
+  }
+}

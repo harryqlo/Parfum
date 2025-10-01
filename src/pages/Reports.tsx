@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useData } from '../context/DataContext';
 import { AdjustmentType } from '../types';
 import { formatCurrency } from '../utils/helpers';
+import DataTable from '../components/DataTable';
 
 type ReportType = 'sales' | 'inventory' | 'profit';
 
@@ -82,14 +83,27 @@ const Reports: React.FC = () => {
             <div><span className="font-semibold">Ingresos Totales:</span> {formatCurrency(generatedReport.summary.totalRevenue)}</div>
             <div><span className="font-semibold">Productos Vendidos:</span> {generatedReport.summary.totalItemsSold}</div>
           </div>
-          <table className="w-full text-left">
-            <thead><tr><th className="p-2 bg-secondary">Fecha</th><th className="p-2 bg-secondary">Producto</th><th className="p-2 bg-secondary">Cantidad</th><th className="p-2 bg-secondary">Total</th></tr></thead>
-            <tbody>
-              {generatedReport.data.map((s: any) => (
-                <tr key={s.id} className="border-b"><td className="p-2">{s.date}</td><td className="p-2">{products.find(p=>p.id === s.productId)?.name}</td><td className="p-2">{s.quantity}</td><td className="p-2">{formatCurrency(s.total)}</td></tr>
-              ))}
-            </tbody>
-          </table>
+          <DataTable
+            columns={[
+              { key: 'date', header: 'Fecha', accessor: 'date' },
+              {
+                key: 'product',
+                header: 'Producto',
+                render: (sale: any) => products.find(p => p.id === sale.productId)?.name || sale.productId,
+                className: 'min-w-[200px]'
+              },
+              { key: 'quantity', header: 'Cantidad', accessor: 'quantity', variant: 'badge' },
+              {
+                key: 'total',
+                header: 'Total',
+                render: (sale: any) => formatCurrency(sale.total),
+                className: 'font-semibold'
+              }
+            ]}
+            rows={generatedReport.data}
+            rowKey={(sale: any) => sale.id}
+            emptyState={<p className="text-text-secondary">No hay ventas en el período seleccionado.</p>}
+          />
         </div>
       );
     }
@@ -103,14 +117,28 @@ const Reports: React.FC = () => {
             <div><span className="font-semibold">Unidades Vendibles:</span> {generatedReport.summary.totalUnits}</div>
             <div><span className="font-semibold">Unidades Tester:</span> {generatedReport.summary.totalTesters}</div>
           </div>
-          <table className="w-full text-left">
-            <thead><tr><th className="p-2 bg-secondary">SKU</th><th className="p-2 bg-secondary">Producto</th><th className="p-2 bg-secondary">Stock Vendible</th><th className="p-2 bg-secondary">Testers</th><th className="p-2 bg-secondary">Valor (Costo)</th></tr></thead>
-            <tbody>
-              {generatedReport.data.map((p: any) => (
-                <tr key={p.id} className="border-b"><td className="p-2">{p.id}</td><td className="p-2">{p.name}</td><td className="p-2">{p.stock}</td><td className="p-2">{p.testerStock}</td><td className="p-2">{formatCurrency(p.stock * p.costPrice)}</td></tr>
-              ))}
-            </tbody>
-          </table>
+          <DataTable
+            columns={[
+              {
+                key: 'sku',
+                header: 'SKU',
+                render: (product: any) => <span className="font-mono text-sm">{product.id}</span>,
+                className: 'whitespace-nowrap'
+              },
+              { key: 'name', header: 'Producto', accessor: 'name', className: 'min-w-[200px]' },
+              { key: 'stock', header: 'Stock Vendible', accessor: 'stock', variant: 'badge' },
+              { key: 'testerStock', header: 'Testers', accessor: 'testerStock', variant: 'badge' },
+              {
+                key: 'stockValue',
+                header: 'Valor (Costo)',
+                render: (product: any) => formatCurrency(product.stock * product.costPrice),
+                className: 'font-semibold'
+              }
+            ]}
+            rows={generatedReport.data}
+            rowKey={(product: any) => product.id}
+            emptyState={<p className="text-text-secondary">No hay inventario para mostrar.</p>}
+          />
         </div>
       );
     }
@@ -129,14 +157,22 @@ const Reports: React.FC = () => {
             </div>
           </div>
           <h4 className="text-lg font-semibold mb-2">Detalle de Ventas del Período</h4>
-          <table className="w-full text-left">
-            <thead><tr><th className="p-2 bg-secondary">Fecha</th><th className="p-2 bg-secondary">Producto</th><th className="p-2 bg-secondary">Ingreso</th><th className="p-2 bg-secondary">Costo</th><th className="p-2 bg-secondary">Ganancia Bruta</th></tr></thead>
-            <tbody>
-              {generatedReport.data.map((s: any) => (
-                <tr key={s.id} className="border-b"><td className="p-2">{s.date}</td><td className="p-2">{s.productName}</td><td className="p-2">{formatCurrency(s.total)}</td><td className="p-2">{formatCurrency(s.cost)}</td><td className="p-2">{formatCurrency(s.profit)}</td></tr>
-              ))}
-            </tbody>
-          </table>
+          <DataTable
+            columns={[
+              { key: 'date', header: 'Fecha', accessor: 'date' },
+              { key: 'productName', header: 'Producto', accessor: 'productName', className: 'min-w-[200px]' },
+              { key: 'revenue', header: 'Ingreso', render: (sale: any) => formatCurrency(sale.total) },
+              { key: 'cost', header: 'Costo', render: (sale: any) => formatCurrency(sale.cost) },
+              {
+                key: 'profit',
+                header: 'Ganancia Bruta',
+                render: (sale: any) => <span className="text-success font-semibold">{formatCurrency(sale.profit)}</span>
+              }
+            ]}
+            rows={generatedReport.data}
+            rowKey={(sale: any) => sale.id}
+            emptyState={<p className="text-text-secondary">No hay datos de rentabilidad para el período seleccionado.</p>}
+          />
         </div>
       );
     }

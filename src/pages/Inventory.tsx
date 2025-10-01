@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useData } from '../context/DataContext';
 import Modal from '../components/Modal';
+import DataTable from '../components/DataTable';
 import { Product, Gender } from '../types';
 import { EditIcon, DeleteIcon, PackageIcon, ArrowUpIcon, ArrowDownIcon, BeakerIcon, ArchiveIcon } from '../components/Icons';
 import { useNotification } from '../context/NotificationContext';
@@ -165,9 +166,14 @@ const Inventory: React.FC = () => {
   }
 
   const SortableHeader: React.FC<{ sortKey: SortableProductKeys; children: React.ReactNode }> = ({ sortKey, children }) => (
-    <th className="p-4 font-semibold cursor-pointer text-left" onClick={() => requestSort(sortKey)}>
-      <div className="flex items-center">{children} {getSortIcon(sortKey)}</div>
-    </th>
+    <button
+      type="button"
+      onClick={() => requestSort(sortKey)}
+      className="flex items-center gap-1 font-semibold text-text-primary hover:text-accent focus:outline-none"
+    >
+      {children}
+      {getSortIcon(sortKey)}
+    </button>
   );
   
   const TabButton: React.FC<{tabId: ActiveTab; children: React.ReactNode;}> = ({ tabId, children }) => (
@@ -200,62 +206,120 @@ const Inventory: React.FC = () => {
       </div>
 
       <div className="bg-primary rounded-xl shadow-md overflow-hidden border border-border">
-        {filteredProducts.length === 0 ? (
-          <div className="text-center py-20">
-            <PackageIcon className="mx-auto h-16 w-16 text-gray-300" />
-            <h3 className="mt-4 text-lg font-semibold text-text-primary">No se encontraron productos</h3>
-            <p className="mt-1 text-sm text-text-secondary">{activeTab === 'testers' ? 'No hay testers activos actualmente.' : 'Intenta ajustar los filtros o agrega un producto.'}</p>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-secondary">
-                <tr>
-                  <SortableHeader sortKey="id">SKU</SortableHeader>
-                  <SortableHeader sortKey="name">Producto</SortableHeader>
-                  <SortableHeader sortKey="brand">Marca</SortableHeader>
-                  <SortableHeader sortKey="gender">Género</SortableHeader>
-                  <SortableHeader sortKey="stock">Stock</SortableHeader>
-                  <SortableHeader sortKey="testerStock">Testers</SortableHeader>
-                  <SortableHeader sortKey="costPrice">Precio Costo</SortableHeader>
-                  <SortableHeader sortKey="salePrice">Precio Venta</SortableHeader>
-                  <SortableHeader sortKey="stockValue">Valor Stock</SortableHeader>
-                  <th className="p-4 font-semibold text-left">Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {sortedProducts.map(product => (
-                  <tr key={product.id} className="border-b border-border hover:bg-secondary/50 transition-colors">
-                    <td className="p-4 font-mono text-sm text-left">{product.id}</td>
-                    <td className="p-4 text-left">
-                      <Link to={`/inventory/${product.id}`} className="text-accent hover:underline font-medium">
-                        {product.name}
-                      </Link>
-                    </td>
-                    <td className="p-4 text-left">{product.brand}</td>
-                    <td className="p-4 text-left">{product.gender}</td>
-                    <td className="p-4 font-medium text-left">{product.stock}</td>
-                    <td className="p-4 font-medium text-left">{product.testerStock}</td>
-                    <td className="p-4 text-left">{formatCurrency(product.costPrice)}</td>
-                    <td className="p-4 text-left">{formatCurrency(product.salePrice)}</td>
-                    <td className="p-4 font-medium text-left">{formatCurrency(product.stock * product.costPrice)}</td>
-                    <td className="p-4 text-left">
-                      <div className="flex items-center space-x-2">
-                        {activeTab === 'testers' ? (
-                           <button onClick={() => handleConsumeTester(product.id, product.name)} title="Marcar como Consumido" className="text-yellow-600 hover:text-yellow-800 p-1"><ArchiveIcon className="w-5 h-5"/></button>
-                        ) : (
-                           <button onClick={() => handleConvertToTester(product.id, product.name)} title="Convertir a Tester" className="text-blue-600 hover:text-blue-800 p-1 disabled:opacity-50 disabled:cursor-not-allowed" disabled={product.stock < 1 || product.testerStock > 0}><BeakerIcon className="w-5 h-5"/></button>
-                        )}
-                        <button onClick={() => handleOpenModalForEdit(product)} title="Editar" className="text-accent hover:text-accent-hover p-1"><EditIcon className="w-5 h-5"/></button>
-                        <button onClick={() => handleDelete(product.id)} title="Eliminar" className="text-danger hover:opacity-75 p-1"><DeleteIcon className="w-5 h-5"/></button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+        <DataTable<Product>
+          columns={[
+            {
+              key: 'id',
+              header: <SortableHeader sortKey="id">SKU</SortableHeader>,
+              render: product => <span className="font-mono text-sm">{product.id}</span>,
+              className: 'whitespace-nowrap',
+            },
+            {
+              key: 'name',
+              header: <SortableHeader sortKey="name">Producto</SortableHeader>,
+              render: product => (
+                <Link to={`/inventory/${product.id}`} className="text-accent hover:underline font-medium">
+                  {product.name}
+                </Link>
+              ),
+              className: 'min-w-[200px]',
+            },
+            {
+              key: 'brand',
+              header: <SortableHeader sortKey="brand">Marca</SortableHeader>,
+              accessor: 'brand',
+              className: 'min-w-[160px]',
+            },
+            {
+              key: 'gender',
+              header: <SortableHeader sortKey="gender">Género</SortableHeader>,
+              accessor: 'gender',
+              className: 'min-w-[120px]',
+            },
+            {
+              key: 'stock',
+              header: <SortableHeader sortKey="stock">Stock</SortableHeader>,
+              accessor: 'stock',
+              variant: 'badge',
+            },
+            {
+              key: 'testerStock',
+              header: <SortableHeader sortKey="testerStock">Testers</SortableHeader>,
+              accessor: 'testerStock',
+              variant: 'badge',
+            },
+            {
+              key: 'costPrice',
+              header: <SortableHeader sortKey="costPrice">Precio Costo</SortableHeader>,
+              render: product => formatCurrency(product.costPrice),
+              className: 'min-w-[140px]',
+            },
+            {
+              key: 'salePrice',
+              header: <SortableHeader sortKey="salePrice">Precio Venta</SortableHeader>,
+              render: product => formatCurrency(product.salePrice),
+              className: 'min-w-[140px]',
+            },
+            {
+              key: 'stockValue',
+              header: <SortableHeader sortKey="stockValue">Valor Stock</SortableHeader>,
+              render: product => formatCurrency(product.stock * product.costPrice),
+              className: 'min-w-[160px]',
+            },
+          ]}
+          rows={sortedProducts}
+          rowKey={product => product.id}
+          emptyState={
+            <>
+              <PackageIcon className="mx-auto h-16 w-16 text-gray-300" />
+              <h3 className="text-lg font-semibold text-text-primary">No se encontraron productos</h3>
+              <p className="text-sm text-text-secondary">
+                {activeTab === 'testers'
+                  ? 'No hay testers activos actualmente.'
+                  : 'Intenta ajustar los filtros o agrega un producto.'}
+              </p>
+            </>
+          }
+          actions={{
+            render: product => (
+              <div className="flex items-center space-x-2">
+                {activeTab === 'testers' ? (
+                  <button
+                    onClick={() => handleConsumeTester(product.id, product.name)}
+                    title="Marcar como Consumido"
+                    className="text-yellow-600 hover:text-yellow-800 p-1"
+                  >
+                    <ArchiveIcon className="w-5 h-5" />
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => handleConvertToTester(product.id, product.name)}
+                    title="Convertir a Tester"
+                    className="text-blue-600 hover:text-blue-800 p-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={product.stock < 1 || product.testerStock > 0}
+                  >
+                    <BeakerIcon className="w-5 h-5" />
+                  </button>
+                )}
+                <button
+                  onClick={() => handleOpenModalForEdit(product)}
+                  title="Editar"
+                  className="text-accent hover:text-accent-hover p-1"
+                >
+                  <EditIcon className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={() => handleDelete(product.id)}
+                  title="Eliminar"
+                  className="text-danger hover:opacity-75 p-1"
+                >
+                  <DeleteIcon className="w-5 h-5" />
+                </button>
+              </div>
+            ),
+            className: 'min-w-[160px]',
+          }}
+        />
       </div>
 
       <Modal isOpen={isModalOpen} onClose={handleCloseModal} title={editingProduct ? "Editar Producto" : "Agregar Nuevo Producto"}>

@@ -4,6 +4,7 @@ import { Customer } from '../types';
 import { useNotification } from '../context/NotificationContext';
 import Modal from '../components/Modal';
 import { EditIcon, DeleteIcon, UsersIcon, ArrowUpIcon, ArrowDownIcon } from '../components/Icons';
+import DataTable from '../components/DataTable';
 import { Link } from 'react-router-dom';
 import { formatCurrency } from '../utils/helpers';
 
@@ -115,9 +116,14 @@ const Customers: React.FC = () => {
     };
     
     const SortableHeader: React.FC<{ sortKey: SortableCustomerKeys; children: React.ReactNode }> = ({ sortKey, children }) => (
-        <th className="p-4 font-semibold cursor-pointer text-left" onClick={() => requestSort(sortKey)}>
-            <div className="flex items-center">{children} {getSortIcon(sortKey)}</div>
-        </th>
+        <button
+            type="button"
+            onClick={() => requestSort(sortKey)}
+            className="flex items-center gap-1 font-semibold text-text-primary hover:text-accent focus:outline-none"
+        >
+            {children}
+            {getSortIcon(sortKey)}
+        </button>
     );
 
     return (
@@ -138,49 +144,66 @@ const Customers: React.FC = () => {
                 </div>
             </div>
             <div className="bg-primary rounded-xl shadow-md overflow-hidden border border-border">
-                {sortedCustomers.length === 0 ? (
-                    <div className="text-center py-20">
-                        <UsersIcon className="mx-auto h-16 w-16 text-gray-300" />
-                        <h3 className="mt-4 text-lg font-semibold text-text-primary">No hay clientes registrados</h3>
-                        <p className="mt-1 text-sm text-text-secondary">Haz clic en "Agregar Cliente" para empezar.</p>
-                    </div>
-                ) : (
-                    <div className="overflow-x-auto">
-                        <table className="w-full">
-                            <thead className="bg-secondary">
-                                <tr>
-                                    <SortableHeader sortKey="name">Nombre</SortableHeader>
-                                    <SortableHeader sortKey="phone">Teléfono</SortableHeader>
-                                    <SortableHeader sortKey="email">Email</SortableHeader>
-                                    <th className="p-4 font-semibold text-left">Compras</th>
-                                    <th className="p-4 font-semibold text-left">Total Gastado</th>
-                                    <th className="p-4 font-semibold text-left">Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {sortedCustomers.map(customer => (
-                                    <tr key={customer.id} className="border-b border-border hover:bg-secondary/50 transition-colors">
-                                        <td className="p-4 font-medium">
-                                            <Link to={`/customers/${customer.id}`} className="text-accent hover:underline">
-                                                {customer.name}
-                                            </Link>
-                                        </td>
-                                        <td className="p-4">{customer.phone}</td>
-                                        <td className="p-4">{customer.email}</td>
-                                        <td className="p-4">{customer.purchaseCount}</td>
-                                        <td className="p-4 font-semibold">{formatCurrency(customer.totalSpent)}</td>
-                                        <td className="p-4">
-                                            <div className="flex items-center space-x-2">
-                                                <button onClick={() => handleOpenModal(customer)} className="text-accent hover:text-accent-hover p-1"><EditIcon className="w-5 h-5" /></button>
-                                                <button onClick={() => handleDelete(customer.id)} className="text-danger hover:opacity-75 p-1"><DeleteIcon className="w-5 h-5" /></button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
+                <DataTable
+                    columns={[
+                        {
+                            key: 'name',
+                            header: <SortableHeader sortKey="name">Nombre</SortableHeader>,
+                            render: customer => (
+                                <Link to={`/customers/${customer.id}`} className="text-accent hover:underline font-medium">
+                                    {customer.name}
+                                </Link>
+                            ),
+                            className: 'min-w-[200px]'
+                        },
+                        {
+                            key: 'phone',
+                            header: <SortableHeader sortKey="phone">Teléfono</SortableHeader>,
+                            accessor: 'phone',
+                            className: 'min-w-[160px]'
+                        },
+                        {
+                            key: 'email',
+                            header: <SortableHeader sortKey="email">Email</SortableHeader>,
+                            accessor: 'email',
+                            className: 'min-w-[200px]'
+                        },
+                        {
+                            key: 'purchaseCount',
+                            header: 'Compras',
+                            accessor: 'purchaseCount',
+                            variant: 'badge'
+                        },
+                        {
+                            key: 'totalSpent',
+                            header: 'Total Gastado',
+                            render: customer => formatCurrency(customer.totalSpent),
+                            className: 'font-semibold'
+                        }
+                    ]}
+                    rows={sortedCustomers}
+                    rowKey={customer => customer.id}
+                    emptyState={
+                        <>
+                            <UsersIcon className="mx-auto h-16 w-16 text-gray-300" />
+                            <h3 className="text-lg font-semibold text-text-primary">No hay clientes registrados</h3>
+                            <p className="text-sm text-text-secondary">Haz clic en "Agregar Cliente" para empezar.</p>
+                        </>
+                    }
+                    actions={{
+                        render: customer => (
+                            <div className="flex items-center space-x-2">
+                                <button onClick={() => handleOpenModal(customer)} className="text-accent hover:text-accent-hover p-1">
+                                    <EditIcon className="w-5 h-5" />
+                                </button>
+                                <button onClick={() => handleDelete(customer.id)} className="text-danger hover:opacity-75 p-1">
+                                    <DeleteIcon className="w-5 h-5" />
+                                </button>
+                            </div>
+                        ),
+                        className: 'min-w-[140px]'
+                    }}
+                />
             </div>
 
             <Modal isOpen={isModalOpen} onClose={handleCloseModal} title={editingCustomer ? "Editar Cliente" : "Agregar Nuevo Cliente"}>
