@@ -65,18 +65,24 @@ const ProductDetail: React.FC = () => {
   const movementsWithRunningStock = useMemo(() => {
     if (!product) return [];
     
-    const sortedMovements = [...movements].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-
-    let runningStock = product.stock;
+    // Sort movements chronologically (oldest first) to calculate running stock correctly
+    const sortedMovements = [...movements].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
     
-    return sortedMovements.map(movement => {
-        const stockAfter = runningStock;
-        runningStock -= movement.quantity;
+    // Find the very first purchase to establish the initial stock
+    const firstPurchase = sortedMovements.find(m => m.type === 'Compra');
+    let runningStock = 0;
+    
+    const calculatedMovements = sortedMovements.map(movement => {
+        runningStock += movement.quantity;
         return {
           ...movement,
-          stockAfter,
+          stockAfter: runningStock,
         };
     });
+
+    // Reverse the array back to show newest first in the UI
+    return calculatedMovements.reverse();
+    
   }, [movements, product]);
 
   if (!product) {

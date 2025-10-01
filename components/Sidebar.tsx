@@ -54,9 +54,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           <NavLink to="/reports" onClick={onClose} className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>
             <DocumentTextIcon className="h-5 w-5 mr-3" /> Reportes
           </NavLink>
-          <NavLink to="/analytics" onClick={onClose} className={({ isActive }) => `${navLinkClasses} ${isActive ? activeNavLinkClasses : ''}`}>
-            <BarChartIcon className="h-5 w-5 mr-3" /> Análisis IA
-          </NavLink>
         </nav>
       </div>
     </>

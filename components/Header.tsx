@@ -20,7 +20,6 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
     if (path.startsWith('/customers/')) return 'Detalle de Cliente';
     if (path === '/cashflow') return 'Análisis de Flujo de Caja';
     if (path === '/reports') return 'Generador de Reportes';
-    if (path === '/analytics') return 'Análisis con Inteligencia Artificial';
     return 'Perfume ERP Pro';
   };
 
