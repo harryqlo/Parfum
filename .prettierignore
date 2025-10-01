@@ -1,0 +1,17 @@
+dist
+node_modules
+coverage
+package-lock.json
+App.tsx
+components/
+context/
+data/
+hooks/
+index.tsx
+pages/
+services/
+utils/
+index.html
+README.md
+metadata.json
+types.ts
