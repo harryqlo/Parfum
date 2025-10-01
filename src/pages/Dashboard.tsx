@@ -47,16 +47,16 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 px-6 py-12 text-white shadow-2xl">
-        <div className="absolute inset-0 opacity-40 mix-blend-soft-light bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.4),_transparent_55%)]" aria-hidden="true" />
+      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-violet-300 via-rose-200 to-pink-200 px-6 py-12 text-slate-900 shadow-2xl">
+        <div className="absolute inset-0 opacity-50 mix-blend-soft-light bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.55),_transparent_60%)]" aria-hidden="true" />
         <div className="relative z-10 max-w-3xl space-y-4">
-          <span className="inline-flex items-center rounded-full bg-white/15 px-4 py-1 text-xs font-semibold uppercase tracking-widest shadow-sm ring-1 ring-white/40">Panel general</span>
+          <span className="inline-flex items-center rounded-full bg-white/70 px-4 py-1 text-xs font-semibold uppercase tracking-widest shadow-sm ring-1 ring-white/80">Panel general</span>
           <h1 className="text-3xl font-bold leading-tight sm:text-4xl">Bienvenido al tablero de gestión de Parfum</h1>
-          <p className="text-base text-indigo-100 sm:text-lg">Visualiza el pulso de tu negocio de un vistazo: inventario, ventas y métricas clave en un solo lugar para tomar decisiones estratégicas más rápido.</p>
+          <p className="text-base text-slate-700 sm:text-lg">Visualiza el pulso de tu negocio de un vistazo: inventario, ventas y métricas clave en un solo lugar para tomar decisiones estratégicas más rápido.</p>
           <div>
             <Link
               to="/reports"
-              className="inline-flex items-center gap-2 rounded-full bg-white/20 px-6 py-3 text-sm font-semibold uppercase tracking-wide text-white shadow-lg shadow-indigo-900/30 ring-1 ring-white/40 backdrop-blur transition hover:bg-white/30"
+              className="inline-flex items-center gap-2 rounded-full bg-white/70 px-6 py-3 text-sm font-semibold uppercase tracking-wide text-slate-900 shadow-lg shadow-rose-200/60 ring-1 ring-white/80 backdrop-blur transition hover:bg-white/80"
             >
               <DocumentTextIcon className="h-5 w-5" />
               Ver reportes
@@ -70,25 +70,25 @@ const Dashboard: React.FC = () => {
           title="Valor del Stock (Costo)"
           value={formatCurrency(totalStockValue)}
           icon={<PackageIcon className="h-6 w-6 text-white" />}
-          color="from-indigo-500 to-indigo-600"
+          color="from-sky-300 to-indigo-300"
         />
         <DashboardCard
           title="Ingresos Totales"
           value={formatCurrency(totalRevenue)}
           icon={<DollarSignIcon className="h-6 w-6 text-white" />}
-          color="from-emerald-500 to-emerald-600"
+          color="from-emerald-300 to-teal-300"
         />
         <DashboardCard
           title="Ganancia Total"
           value={formatCurrency(totalProfit)}
           icon={<BarChartIcon className="h-6 w-6 text-white" />}
-          color="from-amber-500 to-orange-500"
+          color="from-amber-300 to-orange-300"
         />
         <DashboardCard
           title="Total de Ventas"
           value={sales.length.toString()}
           icon={<ShoppingCartIcon className="h-6 w-6 text-white" />}
-          color="from-rose-500 to-rose-600"
+          color="from-rose-300 to-pink-300"
         />
       </div>
 
