@@ -105,23 +105,23 @@ const CashFlow: React.FC = () => {
       </div>
       
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <DashboardCard 
-          title="Ingresos Totales" 
-          value={formatCurrency(processedData.totalIncome)} 
-          icon={<TrendingUpIcon className="h-6 w-6 text-green-600" />}
-          color="bg-green-100"
+        <DashboardCard
+          title="Ingresos Totales"
+          value={formatCurrency(processedData.totalIncome)}
+          icon={<TrendingUpIcon className="h-6 w-6 text-white" />}
+          color="from-emerald-400 via-emerald-300 to-green-200"
         />
-        <DashboardCard 
-          title="Egresos Totales" 
+        <DashboardCard
+          title="Egresos Totales"
           value={formatCurrency(processedData.totalExpenses)}
-          icon={<TrendingDownIcon className="h-6 w-6 text-danger" />}
-          color="bg-red-100"
+          icon={<TrendingDownIcon className="h-6 w-6 text-white" />}
+          color="from-rose-400 via-rose-300 to-pink-200"
         />
-        <DashboardCard 
-          title="Flujo de Caja Neto" 
+        <DashboardCard
+          title="Flujo de Caja Neto"
           value={formatCurrency(processedData.netCashFlow)}
-          icon={<DollarSignIcon className="h-6 w-6 text-accent" />}
-          color="bg-indigo-100"
+          icon={<DollarSignIcon className="h-6 w-6 text-white" />}
+          color="from-indigo-400 via-indigo-300 to-sky-200"
         />
       </div>
 
