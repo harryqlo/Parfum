@@ -1,81 +1,84 @@
 # Perfume ERP Pro
 
-Un sistema ERP intuitivo y local para la gestión de inventario, compras y ventas de perfumería, diseñado para emprendedores y pequeñas empresas.
+Sistema ERP local-first para perfumerías construido con React + TypeScript y Vite. El objetivo de este documento es explicar la estructura actual del proyecto, cómo trabajar en él de forma local y qué pasos seguir para desplegarlo en Netlify utilizando la nueva configuración incluida en el repositorio.
 
-![Vista Previa de Perfume ERP Pro](https://i.imgur.com/y3dbW0Z.png)
+## 🗂️ Estructura del proyecto
 
----
+```text
+.
+├── App.tsx                # Punto de entrada de la aplicación
+├── components/            # Componentes reutilizables
+├── context/               # Providers y hooks de contexto global
+├── data/                  # Datos estáticos semilla
+├── hooks/                 # Hooks personalizados
+├── pages/                 # Vistas principales del sistema
+├── services/              # Servicios (APIs locales/externas)
+├── utils/                 # Utilidades y helpers
+├── types.ts               # Tipos compartidos
+├── vite.config.ts         # Configuración de Vite
+├── netlify.toml           # Configuración de build/redirects para Netlify
+└── _headers               # Directivas HTTP para Netlify (seguridad y cache)
+```
 
-## 🌟 Introducción
+## ✅ Requisitos previos
 
-**Perfume ERP Pro** es una solución completa y moderna para administrar todos los aspectos de un negocio de perfumería. Desde el seguimiento del inventario hasta el punto de venta y el análisis financiero, esta herramienta está diseñada para ser potente y fácil de usar.
+- Node.js 18 LTS o superior (se probó con Node 18.20).
+- npm 9 o superior.
+- Acceso a una cuenta de Netlify para desplegar el sitio estático.
 
-La principal ventaja de este sistema es su enfoque **"Local-First"**. Todos los datos se almacenan de forma segura en tu propio navegador, lo que significa que:
-- **No necesitas un servidor ni una base de datos externa.**
-- **Funciona completamente sin conexión a internet.**
-- **Tus datos son privados y accesibles al instante.**
-- **Es increíblemente rápido y responsivo.**
+## 🧑‍💻 Uso local
 
-## ✨ Características Principales
+1. Clonar el repositorio y entrar en la carpeta del proyecto.
+2. Instalar dependencias:
+   ```bash
+   npm install
+   ```
+3. Ejecutar el entorno de desarrollo con recarga en caliente:
+   ```bash
+   npm run dev
+   ```
+   La aplicación quedará disponible normalmente en `http://localhost:5173`.
 
-Este sistema cuenta con un conjunto de módulos integrados para cubrir todas las necesidades de tu negocio:
+### Scripts disponibles
 
--   📊 **Dashboard Interactivo:** Visualiza métricas clave como el valor del stock, ingresos, ganancias y volumen de ventas. Gráficos dinámicos te muestran los productos más vendidos y la evolución de las ventas en el tiempo.
--   📦 **Gestión de Inventario Avanzada:**
-    -   Control total sobre productos (SKU, marca, género, precios).
-    -   Seguimiento separado del stock vendible y las unidades de muestra (testers).
-    -   Herramientas para convertir productos a testers y registrar su consumo.
-    -   Filtros y ordenamiento para una navegación eficiente.
--   🛒 **Punto de Venta (POS) Ágil:** Una interfaz optimizada para registrar ventas de forma rápida. Busca productos, añádelos al carrito y finaliza la transacción en segundos.
--   👥 **Administración de Clientes (CRM):**
-    -   Crea y gestiona una base de datos de tus clientes.
-    -   Consulta el historial de compras y el total gastado por cada cliente.
--   📈 **Análisis Financiero Detallado:**
-    -   **Flujo de Caja:** Analiza ingresos y egresos en periodos personalizables.
-    -   **Reportes de Rentabilidad:** Calcula la ganancia neta considerando el costo de la mercancía y las inversiones en testers.
--   📂 **Historial Completo:** Registra y consulta todas las compras a proveedores y el historial de ventas con facilidad.
--   🔒 **100% Local y Offline:** Tus datos, tu control. Todo funciona directamente en tu dispositivo.
+| Script         | Descripción                                                       |
+| -------------- | ----------------------------------------------------------------- |
+| `npm run dev`  | Levanta el servidor de desarrollo de Vite.                        |
+| `npm run build`| Genera la versión optimizada en la carpeta `dist/`.               |
+| `npm run preview` | Sirve localmente la build generada para validación manual.  |
 
-## 🚀 Tecnologías Utilizadas
+## 🚀 Proceso de build y despliegue
 
--   **Frontend:** React 19 con TypeScript
--   **Estilos:** Tailwind CSS
--   **Gráficos:** Recharts
--   **Navegación:** React Router
--   **Almacenamiento:** LocalStorage del Navegador
+1. Ejecutar `npm run build`; la carpeta `dist/` contendrá los archivos estáticos.
+2. Netlify utilizará `netlify.toml` para:
+   - Ejecutar `npm run build` durante el deploy.
+   - Publicar los archivos de `dist/`.
+   - Redirigir todas las rutas SPA a `index.html` (`/* → /index.html`).
+3. El archivo `_headers` define:
+   - Directivas de seguridad mínimas (`X-Frame-Options`, `Content-Security-Policy`, etc.).
+   - Cache agresivo para recursos dentro de `/assets/`.
 
-## 🛠️ Instalación y Uso Local
+### Variables de entorno sensibles
 
-No se requiere un proceso de compilación complejo. Para ejecutar la aplicación en tu máquina local, sigue estos pasos:
+Si se utilizan integraciones externas, defina las variables desde **Site settings → Build & deploy → Environment** en Netlify.
 
-1.  **Clona el repositorio:**
-    ```bash
-    git clone https://github.com/tu-usuario/perfume-erp-pro.git
-    ```
-2.  **Navega al directorio del proyecto:**
-    ```bash
-    cd perfume-erp-pro
-    ```
-3.  **Abre el archivo `index.html` en tu navegador web.**
+| Variable                | Descripción                                                               |
+| ----------------------- | ------------------------------------------------------------------------- |
+| `VITE_GEMINI_API_KEY`   | Clave de acceso para el servicio Gemini (se requiere si se mantiene activo el módulo correspondiente). |
 
-¡Eso es todo! La aplicación se ejecutará localmente.
+1. Ingrese a la UI de Netlify, seleccione el sitio y abra **Site configuration → Environment variables**.
+2. Añada cada variable con su valor. Recuerde prefijar con `VITE_` para exponerla al cliente (Vite).
+3. Salve los cambios y vuelva a desplegar.
 
-## 🌐 Despliegue en GitHub Pages
+### Flujo recomendado de CI/CD
 
-Puedes alojar esta aplicación de forma gratuita en GitHub Pages.
+1. Crear una rama de trabajo (`feature/...`).
+2. Abrir un **Branch Deploy** manual en Netlify apuntando a esa rama y verificar que la build complete correctamente.
+3. Una vez validado, abrir un Pull Request y esperar el deploy automático.
+4. Si el pipeline fallara, realizar rollback eliminando temporalmente `netlify.toml` y restaurando el `README.md` hasta corregir el problema.
 
-1.  **Crea un Repositorio en GitHub:** Sube el código del proyecto a un nuevo repositorio.
-2.  **Ve a la Configuración:** En tu repositorio, haz clic en la pestaña `Settings`.
-3.  **Accede a Pages:** En el menú lateral izquierdo, selecciona `Pages`.
-4.  **Configura la Fuente:** En la sección "Build and deployment", bajo "Source", selecciona `Deploy from a branch`.
-5.  **Elige la Rama:** Selecciona la rama `main` (o `master`) y la carpeta `/ (root)`. Haz clic en `Save`.
+> ℹ️ Desde este entorno no es posible ejecutar un deploy a Netlify. Se recomienda seguir los pasos anteriores manualmente para validar la primera publicación.
 
-GitHub tardará unos minutos en construir y desplegar tu sitio. Una vez listo, podrás acceder a él desde la URL que aparecerá en la misma sección de configuración de Pages.
+## 🧾 Licencia
 
-## 🤝 Contribuciones
-
-Las contribuciones son bienvenidas. Si tienes ideas para mejorar la aplicación, por favor abre un *issue* para discutirlo o envía un *pull request* con tus cambios.
-
-## 📄 Licencia
-
-Distribuido bajo la Licencia MIT. Consulta el archivo `LICENSE` para más información.
+Distribuido bajo la Licencia MIT. Consulte el archivo `LICENSE` para más información.
