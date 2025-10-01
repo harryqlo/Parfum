@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useData } from '../context/DataContext';
 import { AdjustmentType } from '../types';
 import { formatCurrency } from '../utils/helpers';
+import PageHero from '../components/PageHero';
 
 type ReportType = 'sales' | 'inventory' | 'profit';
 
@@ -144,33 +145,71 @@ const Reports: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="bg-primary p-6 rounded-xl shadow-md border border-border">
-        <h2 className="text-2xl font-bold mb-4">Controles del Reporte</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-          <div>
-            <label className="block text-sm font-medium text-text-secondary">Tipo de Reporte</label>
-            <select value={reportType} onChange={e => setReportType(e.target.value as ReportType)} className="mt-1 block w-full bg-secondary border-border rounded-md shadow-sm focus:ring-accent focus:border-accent">
-              <option value="sales">Resumen de Ventas</option>
-              <option value="inventory">Reporte de Inventario</option>
-              <option value="profit">Análisis de Rentabilidad</option>
-            </select>
-          </div>
-          <div className="flex space-x-4 col-span-1 md:col-span-2">
-            <div className="flex-1">
-              <label className="block text-sm font-medium text-text-secondary">Fecha de Inicio</label>
-              <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="mt-1 block w-full bg-secondary border-border rounded-md shadow-sm focus:ring-accent focus:border-accent" disabled={reportType === 'inventory'} />
+      <PageHero
+        title="Controles del Reporte"
+        actions={
+          <div className="flex w-full flex-col gap-4">
+            <div className="grid w-full gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="sm:col-span-2 lg:col-span-1">
+                <label htmlFor="report-type" className="block text-xs font-semibold uppercase tracking-wide text-slate-700">
+                  Tipo de Reporte
+                </label>
+                <select
+                  id="report-type"
+                  value={reportType}
+                  onChange={e => setReportType(e.target.value as ReportType)}
+                  className="mt-1 block w-full rounded-lg border border-border bg-white/80 px-3 py-2 text-sm shadow-sm backdrop-blur focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent"
+                >
+                  <option value="sales">Resumen de Ventas</option>
+                  <option value="inventory">Reporte de Inventario</option>
+                  <option value="profit">Análisis de Rentabilidad</option>
+                </select>
+              </div>
+              <div className="sm:col-span-1 lg:col-span-1">
+                <label htmlFor="report-start-date" className="block text-xs font-semibold uppercase tracking-wide text-slate-700">
+                  Fecha de Inicio
+                </label>
+                <input
+                  id="report-start-date"
+                  type="date"
+                  value={startDate}
+                  onChange={e => setStartDate(e.target.value)}
+                  className="mt-1 block w-full rounded-lg border border-border bg-white/80 px-3 py-2 text-sm shadow-sm backdrop-blur focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent disabled:cursor-not-allowed disabled:opacity-60"
+                  disabled={reportType === 'inventory'}
+                />
+              </div>
+              <div className="sm:col-span-1 lg:col-span-1">
+                <label htmlFor="report-end-date" className="block text-xs font-semibold uppercase tracking-wide text-slate-700">
+                  Fecha de Fin
+                </label>
+                <input
+                  id="report-end-date"
+                  type="date"
+                  value={endDate}
+                  onChange={e => setEndDate(e.target.value)}
+                  className="mt-1 block w-full rounded-lg border border-border bg-white/80 px-3 py-2 text-sm shadow-sm backdrop-blur focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent disabled:cursor-not-allowed disabled:opacity-60"
+                  disabled={reportType === 'inventory'}
+                />
+              </div>
             </div>
-            <div className="flex-1">
-              <label className="block text-sm font-medium text-text-secondary">Fecha de Fin</label>
-              <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} className="mt-1 block w-full bg-secondary border-border rounded-md shadow-sm focus:ring-accent focus:border-accent" disabled={reportType === 'inventory'} />
+            <div className="flex flex-wrap justify-end gap-2">
+              <button
+                onClick={handleGenerateReport}
+                className="inline-flex items-center justify-center rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white shadow-md transition-colors hover:bg-accent-hover"
+              >
+                Generar Reporte
+              </button>
+              <button
+                onClick={() => window.print()}
+                disabled={!generatedReport}
+                className="inline-flex items-center justify-center rounded-lg border border-border bg-white/70 px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm backdrop-blur transition-colors hover:bg-white/80 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                Imprimir
+              </button>
             </div>
           </div>
-        </div>
-        <div className="mt-4 flex justify-end space-x-2">
-          <button onClick={handleGenerateReport} className="bg-accent hover:bg-accent-hover text-white font-bold py-2 px-4 rounded-lg">Generar Reporte</button>
-          <button onClick={() => window.print()} disabled={!generatedReport} className="bg-primary hover:bg-secondary border border-border text-text-primary font-bold py-2 px-4 rounded-lg disabled:opacity-50">Imprimir</button>
-        </div>
-      </div>
+        }
+      />
       <div className="bg-primary p-6 rounded-xl shadow-md border border-border min-h-[300px]">
         <div id="print-area">
             {generatedReport && <div className="mb-4 text-center"><h2 className="text-2xl font-bold">Reporte de {reportType === 'sales' ? 'Ventas' : reportType === 'inventory' ? 'Inventario' : 'Rentabilidad'}</h2><p>Periodo: {startDate} a {endDate}</p></div>}

@@ -5,6 +5,7 @@ import { PackageIcon, DeleteIcon, CheckCircleIcon, PlusCircleIcon } from '../com
 import QuickAddCustomerModal from '../components/QuickAddCustomerModal';
 import { Customer } from '../types';
 import { formatCurrency } from '../utils/helpers';
+import PageHero from '../components/PageHero';
 
 interface CartItem {
   productId: string;
@@ -115,19 +116,27 @@ const POS: React.FC = () => {
   };
 
   return (
-    <>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-100px)]">
-        {/* Product List */}
-        <div className="lg:col-span-2 bg-primary rounded-xl shadow-md border border-border flex flex-col">
-          <div className="p-4 border-b">
-            <input 
+    <div className="space-y-6">
+      <PageHero
+        title="Punto de Venta"
+        actions={
+          <div className="w-full min-w-[220px] sm:w-80">
+            <label htmlFor="pos-search" className="sr-only">Buscar producto</label>
+            <input
+              id="pos-search"
               type="text"
               placeholder="Buscar por nombre, SKU o marca..."
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              className="w-full bg-secondary p-2 rounded-md border-border focus:ring-2 focus:ring-accent focus:outline-none"
+              className="w-full rounded-lg border border-border bg-white/80 px-3 py-2 shadow-sm backdrop-blur focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent"
             />
           </div>
+        }
+      />
+
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:items-start">
+        {/* Product List */}
+        <div className="lg:col-span-2 bg-primary rounded-xl shadow-md border border-border flex flex-col">
           <div className="flex-1 overflow-y-auto p-4">
               {filteredProducts.length > 0 ? (
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
@@ -241,12 +250,12 @@ const POS: React.FC = () => {
           </div>
         </div>
       </div>
-      <QuickAddCustomerModal 
+      <QuickAddCustomerModal
         isOpen={isQuickAddModalOpen}
         onClose={() => setIsQuickAddModalOpen(false)}
         onCustomerAdded={handleCustomerAdded}
       />
-    </>
+    </div>
   );
 };
 

@@ -6,6 +6,7 @@ import { EditIcon, DeleteIcon, PackageIcon, ArrowUpIcon, ArrowDownIcon, BeakerIc
 import { useNotification } from '../context/NotificationContext';
 import { Link } from 'react-router-dom';
 import { formatCurrency } from '../utils/helpers';
+import PageHero from '../components/PageHero';
 
 type SortableProductKeys = keyof Product | 'stockValue';
 type ActiveTab = 'all' | 'testers';
@@ -177,32 +178,48 @@ const Inventory: React.FC = () => {
   );
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Inventario</h1>
-        <div className="flex items-center space-x-4">
-            <div>
-                <label htmlFor="brandFilter" className="sr-only">Filtrar por marca</label>
-                <select id="brandFilter" name="brandFilter" value={brandFilter} onChange={e => setBrandFilter(e.target.value)} className="block w-full pl-3 pr-10 py-2 text-base rounded-md bg-secondary border-border focus:outline-none focus:ring-2 focus:ring-accent">
-                    <option value="">Todas las Marcas</option>
-                    {brands.map(brand => <option key={brand} value={brand}>{brand}</option>)}
-                </select>
+    <div className="space-y-6">
+      <PageHero
+        title="Inventario"
+        actions={
+          <>
+            <div className="w-full min-w-[200px] sm:w-60">
+              <label htmlFor="brandFilter" className="sr-only">Filtrar por marca</label>
+              <select
+                id="brandFilter"
+                name="brandFilter"
+                value={brandFilter}
+                onChange={e => setBrandFilter(e.target.value)}
+                className="block w-full rounded-lg border border-border bg-white/80 py-2 pl-3 pr-10 text-base shadow-sm backdrop-blur focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent"
+              >
+                <option value="">Todas las Marcas</option>
+                {brands.map(brand => (
+                  <option key={brand} value={brand}>
+                    {brand}
+                  </option>
+                ))}
+              </select>
             </div>
-            <button onClick={handleOpenModalForCreate} className="bg-accent hover:bg-accent-hover text-white font-bold py-2 px-4 rounded-lg transition-colors shadow-md">
-            Agregar Producto
+            <button
+              onClick={handleOpenModalForCreate}
+              className="inline-flex items-center justify-center rounded-lg bg-accent px-4 py-2 font-semibold text-white shadow-md transition-colors hover:bg-accent-hover"
+            >
+              Agregar Producto
             </button>
-        </div>
-      </div>
+          </>
+        }
+      />
 
-      <div className="mb-4 flex space-x-2 border-b border-border">
+      <div className="space-y-4">
+        <div className="flex flex-wrap gap-2 border-b border-border pb-2">
           <TabButton tabId="all">Todos los Productos</TabButton>
           <TabButton tabId="testers">Testers en Exhibición ({products.filter(p => p.testerStock > 0).length})</TabButton>
-      </div>
+        </div>
 
-      <div className="bg-primary rounded-xl shadow-md overflow-hidden border border-border">
-        {filteredProducts.length === 0 ? (
-          <div className="text-center py-20">
-            <PackageIcon className="mx-auto h-16 w-16 text-gray-300" />
+        <div className="overflow-hidden rounded-xl border border-border bg-primary shadow-md">
+          {filteredProducts.length === 0 ? (
+            <div className="text-center py-20">
+              <PackageIcon className="mx-auto h-16 w-16 text-gray-300" />
             <h3 className="mt-4 text-lg font-semibold text-text-primary">No se encontraron productos</h3>
             <p className="mt-1 text-sm text-text-secondary">{activeTab === 'testers' ? 'No hay testers activos actualmente.' : 'Intenta ajustar los filtros o agrega un producto.'}</p>
           </div>
@@ -256,6 +273,7 @@ const Inventory: React.FC = () => {
             </table>
           </div>
         )}
+        </div>
       </div>
 
       <Modal isOpen={isModalOpen} onClose={handleCloseModal} title={editingProduct ? "Editar Producto" : "Agregar Nuevo Producto"}>
