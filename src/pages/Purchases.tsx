@@ -5,6 +5,7 @@ import { Purchase, DocumentType } from '../types';
 import { EditIcon, DeleteIcon, ShoppingCartIcon, ArrowUpIcon, ArrowDownIcon } from '../components/Icons';
 import { useNotification } from '../context/NotificationContext';
 import { formatCurrency } from '../utils/helpers';
+import PageHero from '../components/PageHero';
 
 type SortablePurchaseKeys = keyof Purchase | 'productName' | 'total';
 
@@ -149,15 +150,21 @@ const Purchases: React.FC = () => {
   );
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Compras</h1>
-        <button onClick={handleOpenModalForCreate} className="bg-accent hover:bg-accent-hover text-white font-bold py-2 px-4 rounded-lg transition-colors shadow-md" disabled={products.length === 0}>
-          Registrar Compra
-        </button>
-      </div>
+    <div className="space-y-6">
+      <PageHero
+        title="Compras"
+        actions={
+          <button
+            onClick={handleOpenModalForCreate}
+            className="inline-flex items-center justify-center rounded-lg bg-accent px-4 py-2 font-semibold text-white shadow-md transition-colors hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-60"
+            disabled={products.length === 0}
+          >
+            Registrar Compra
+          </button>
+        }
+      />
 
-      <div className="bg-primary rounded-xl shadow-md overflow-hidden border border-border">
+      <div className="overflow-hidden rounded-xl border border-border bg-primary shadow-md">
         {purchases.length === 0 ? (
           <div className="text-center py-20">
             <ShoppingCartIcon className="mx-auto h-16 w-16 text-gray-300" />

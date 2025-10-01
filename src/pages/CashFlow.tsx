@@ -5,6 +5,7 @@ import DashboardCard from '../components/DashboardCard';
 import { DollarSignIcon, TrendingUpIcon, TrendingDownIcon } from '../components/Icons';
 import { AdjustmentType } from '../types';
 import { formatCurrency } from '../utils/helpers';
+import PageHero from '../components/PageHero';
 
 const CashFlow: React.FC = () => {
   const { products, sales, purchases, adjustments } = useData();
@@ -90,20 +91,39 @@ const CashFlow: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="bg-primary p-6 rounded-xl shadow-md border border-border">
-        <h2 className="text-2xl font-bold mb-4">Seleccionar Período</h2>
-        <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
-            <div className="flex-1">
-              <label className="block text-sm font-medium text-text-secondary">Fecha de Inicio</label>
-              <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="mt-1 block w-full bg-secondary border-border rounded-md shadow-sm focus:ring-accent focus:border-accent" />
+      <PageHero
+        title="Flujo de Caja"
+        subtitle="Analiza ingresos, egresos y saldo disponible para el período seleccionado."
+        actions={
+          <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-end">
+            <div className="flex-1 min-w-[180px]">
+              <label htmlFor="cashflow-start-date" className="block text-xs font-semibold uppercase tracking-wide text-slate-700">
+                Fecha de Inicio
+              </label>
+              <input
+                id="cashflow-start-date"
+                type="date"
+                value={startDate}
+                onChange={e => setStartDate(e.target.value)}
+                className="mt-1 block w-full rounded-lg border border-border bg-white/80 px-3 py-2 text-sm shadow-sm backdrop-blur focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent"
+              />
             </div>
-            <div className="flex-1">
-              <label className="block text-sm font-medium text-text-secondary">Fecha de Fin</label>
-              <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} className="mt-1 block w-full bg-secondary border-border rounded-md shadow-sm focus:ring-accent focus:border-accent" />
+            <div className="flex-1 min-w-[180px]">
+              <label htmlFor="cashflow-end-date" className="block text-xs font-semibold uppercase tracking-wide text-slate-700">
+                Fecha de Fin
+              </label>
+              <input
+                id="cashflow-end-date"
+                type="date"
+                value={endDate}
+                onChange={e => setEndDate(e.target.value)}
+                className="mt-1 block w-full rounded-lg border border-border bg-white/80 px-3 py-2 text-sm shadow-sm backdrop-blur focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent"
+              />
             </div>
-        </div>
-      </div>
-      
+          </div>
+        }
+      />
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <DashboardCard
           title="Ingresos Totales"

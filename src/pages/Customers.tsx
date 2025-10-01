@@ -6,6 +6,7 @@ import Modal from '../components/Modal';
 import { EditIcon, DeleteIcon, UsersIcon, ArrowUpIcon, ArrowDownIcon } from '../components/Icons';
 import { Link } from 'react-router-dom';
 import { formatCurrency } from '../utils/helpers';
+import PageHero from '../components/PageHero';
 
 type SortableCustomerKeys = keyof Customer;
 
@@ -121,23 +122,32 @@ const Customers: React.FC = () => {
     );
 
     return (
-        <div>
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold">Clientes</h1>
-                <div className="flex items-center space-x-4">
-                    <input
-                        type="text"
-                        placeholder="Buscar cliente..."
-                        value={searchTerm}
-                        onChange={e => setSearchTerm(e.target.value)}
-                        className="w-full md:w-64 bg-secondary p-2 rounded-md border-border focus:ring-2 focus:ring-accent focus:outline-none"
-                    />
-                    <button onClick={() => handleOpenModal()} className="bg-accent hover:bg-accent-hover text-white font-bold py-2 px-4 rounded-lg transition-colors shadow-md">
-                        Agregar Cliente
-                    </button>
-                </div>
-            </div>
-            <div className="bg-primary rounded-xl shadow-md overflow-hidden border border-border">
+        <div className="space-y-6">
+            <PageHero
+                title="Clientes"
+                actions={
+                    <>
+                        <div className="w-full min-w-[220px] sm:w-72">
+                            <label htmlFor="customerSearch" className="sr-only">Buscar cliente</label>
+                            <input
+                                id="customerSearch"
+                                type="text"
+                                placeholder="Buscar cliente..."
+                                value={searchTerm}
+                                onChange={e => setSearchTerm(e.target.value)}
+                                className="w-full rounded-lg border border-border bg-white/80 px-3 py-2 shadow-sm backdrop-blur focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent"
+                            />
+                        </div>
+                        <button
+                            onClick={() => handleOpenModal()}
+                            className="inline-flex items-center justify-center rounded-lg bg-accent px-4 py-2 font-semibold text-white shadow-md transition-colors hover:bg-accent-hover"
+                        >
+                            Agregar Cliente
+                        </button>
+                    </>
+                }
+            />
+            <div className="overflow-hidden rounded-xl border border-border bg-primary shadow-md">
                 {sortedCustomers.length === 0 ? (
                     <div className="text-center py-20">
                         <UsersIcon className="mx-auto h-16 w-16 text-gray-300" />
