@@ -4,11 +4,17 @@
 
 @layer base {
   body {
-    @apply min-h-screen bg-gradient-to-br from-[#eef2ff] via-[#f5f3ff] to-[#fdf2f8] font-sans antialiased text-text-primary;
+    font-family: 'Inter', system-ui, sans-serif;
+    min-height: 100vh;
+    background-image: linear-gradient(135deg, #eef2ff, #f5f3ff, #fdf2f8);
+    color: #1f2937;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   #root {
-    @apply min-h-screen flex;
+    min-height: 100vh;
+    display: flex;
   }
 
   @media print {
