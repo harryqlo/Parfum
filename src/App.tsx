@@ -24,19 +24,21 @@ const App: React.FC = () => {
         <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} />
         <div className="flex-1 flex flex-col overflow-hidden">
           <Header onMenuClick={() => setSidebarOpen(true)} />
-          <main className="flex-1 overflow-x-hidden overflow-y-auto bg-background p-4 sm:p-6">
-            <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/inventory" element={<Inventory />} />
-              <Route path="/inventory/:productId" element={<ProductDetail />} />
-              <Route path="/purchases" element={<Purchases />} />
-              <Route path="/pos" element={<POS />} />
-              <Route path="/sales" element={<Sales />} />
-              <Route path="/customers" element={<Customers />} />
-              <Route path="/customers/:customerId" element={<CustomerDetail />} />
-              <Route path="/cashflow" element={<CashFlow />} />
-              <Route path="/reports" element={<Reports />} />
-            </Routes>
+          <main className="flex-1 overflow-y-auto px-6 sm:px-10 py-8 bg-transparent">
+            <div className="mx-auto max-w-7xl space-y-8 bg-white/80 backdrop-blur rounded-3xl shadow-xl border border-white/60 p-6 sm:p-8">
+              <Routes>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/inventory" element={<Inventory />} />
+                <Route path="/inventory/:productId" element={<ProductDetail />} />
+                <Route path="/purchases" element={<Purchases />} />
+                <Route path="/pos" element={<POS />} />
+                <Route path="/sales" element={<Sales />} />
+                <Route path="/customers" element={<Customers />} />
+                <Route path="/customers/:customerId" element={<CustomerDetail />} />
+                <Route path="/cashflow" element={<CashFlow />} />
+                <Route path="/reports" element={<Reports />} />
+              </Routes>
+            </div>
           </main>
         </div>
       </div>
